@@ -1,0 +1,30 @@
+<div class="page-header">
+  <h1>{{ id() ? 'Editar cliente' : 'Novo cliente' }}</h1>
+</div>
+
+@if (error()) {
+  <div class="alert">{{ error() }}</div>
+}
+
+<form class="card" [formGroup]="form" (ngSubmit)="submit()">
+  <label class="form-field">
+    Nome
+    <input formControlName="name" />
+    @if (form.controls.name.touched && form.controls.name.invalid) {
+      <span class="field-error">Informe um nome com 2 a 120 caracteres.</span>
+    }
+  </label>
+
+  <label class="form-field">
+    Telefone
+    <input formControlName="phone" placeholder="(11) 99999-9999" />
+    @if (form.controls.phone.touched && form.controls.phone.invalid) {
+      <span class="field-error">Informe um telefone válido (8 a 20 dígitos).</span>
+    }
+  </label>
+
+  <div class="row">
+    <button type="submit" class="primary" [disabled]="saving()">Salvar</button>
+    <a class="button" routerLink="/clients">Cancelar</a>
+  </div>
+</form>

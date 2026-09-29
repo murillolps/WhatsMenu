@@ -1,0 +1,44 @@
+<div class="page-header">
+  <h1>Produtos</h1>
+  <a class="button primary" routerLink="/products/new">Novo produto</a>
+</div>
+
+@if (error()) {
+  <div class="alert">{{ error() }}</div>
+}
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Nome</th>
+      <th class="num">Preço</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (product of products(); track product.id) {
+      <tr>
+        <td>{{ product.id }}</td>
+        <td>{{ product.name }}</td>
+        <td class="num">{{ product.price | currency: 'BRL' }}</td>
+        <td>
+          <span class="badge" [class]="product.isActive ? 'active' : 'inactive'">
+            {{ product.isActive ? 'Ativo' : 'Inativo' }}
+          </span>
+        </td>
+        <td class="actions">
+          <a class="button" [routerLink]="['/products', product.id, 'edit']">Editar</a>
+          <button type="button" [class.danger]="product.isActive" (click)="toggleActive(product)">
+            {{ product.isActive ? 'Desativar' : 'Ativar' }}
+          </button>
+        </td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="5" class="muted">Nenhum produto cadastrado.</td>
+      </tr>
+    }
+  </tbody>
+</table>

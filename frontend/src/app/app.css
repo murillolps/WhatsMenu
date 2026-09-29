@@ -1,0 +1,35 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 12px 24px;
+  background: #1f2937;
+  color: #fff;
+}
+
+.brand {
+  font-size: 18px;
+}
+
+nav {
+  display: flex;
+  gap: 16px;
+}
+
+nav a {
+  color: #d1d5db;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+nav a.active {
+  background: #374151;
+  color: #fff;
+}
+
+.container {
+  max-width: 960px;
+  margin: 24px auto;
+  padding: 0 16px;
+}

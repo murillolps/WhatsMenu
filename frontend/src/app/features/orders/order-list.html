@@ -1,0 +1,41 @@
+<div class="page-header">
+  <h1>Pedidos</h1>
+  <a class="button primary" routerLink="/orders/new">Novo pedido</a>
+</div>
+
+@if (error()) {
+  <div class="alert">{{ error() }}</div>
+}
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Cliente</th>
+      <th>Data</th>
+      <th class="num">Valor</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (order of orders(); track order.id) {
+      <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.client.name }}</td>
+        <td>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td class="num">{{ order.total | currency: 'BRL' }}</td>
+        <td>
+          <span class="badge" [class]="order.status">{{ statusLabels[order.status] }}</span>
+        </td>
+        <td class="actions">
+          <a class="button" [routerLink]="['/orders', order.id]">Abrir</a>
+        </td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="6" class="muted">Nenhum pedido criado.</td>
+      </tr>
+    }
+  </tbody>
+</table>

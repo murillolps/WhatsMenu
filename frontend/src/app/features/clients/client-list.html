@@ -1,0 +1,35 @@
+<div class="page-header">
+  <h1>Clientes</h1>
+  <a class="button primary" routerLink="/clients/new">Novo cliente</a>
+</div>
+
+@if (error()) {
+  <div class="alert">{{ error() }}</div>
+}
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Nome</th>
+      <th>Telefone</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (client of clients(); track client.id) {
+      <tr>
+        <td>{{ client.id }}</td>
+        <td>{{ client.name }}</td>
+        <td>{{ client.phone }}</td>
+        <td class="actions">
+          <a class="button" [routerLink]="['/clients', client.id, 'edit']">Editar</a>
+        </td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="4" class="muted">Nenhum cliente cadastrado.</td>
+      </tr>
+    }
+  </tbody>
+</table>

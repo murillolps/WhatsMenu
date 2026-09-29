@@ -1,0 +1,112 @@
+<div class="page-header">
+  <h1>Novo pedido</h1>
+</div>
+
+@if (error()) {
+  <div class="alert">{{ error() }}</div>
+}
+
+<section class="card">
+  <label class="form-field">
+    Cliente
+    <select [ngModel]="clientId()" (ngModelChange)="clientId.set($event)">
+      <option [ngValue]="null" disabled>Selecione um cliente</option>
+      @for (client of clients(); track client.id) {
+        <option [ngValue]="client.id">{{ client.name }} — {{ client.phone }}</option>
+      }
+    </select>
+  </label>
+  @if (clients().length === 0) {
+    <p class="muted">
+      Nenhum cliente cadastrado. <a routerLink="/clients/new">Cadastrar cliente</a>
+    </p>
+  }
+</section>
+
+<section class="card">
+  <div class="row">
+    <label class="form-field" style="flex: 1">
+      Produto
+      <select [ngModel]="productToAdd()" (ngModelChange)="productToAdd.set($event)">
+        <option [ngValue]="null" disabled>Selecione um produto</option>
+        @for (product of activeProducts(); track product.id) {
+          <option [ngValue]="product.id">
+            {{ product.name }} — {{ product.price | currency: 'BRL' }}
+          </option>
+        }
+      </select>
+    </label>
+    <label class="form-field" style="width: 100px">
+      Quantidade
+      <input
+        type="number"
+        min="1"
+        step="1"
+        [ngModel]="quantityToAdd()"
+        (ngModelChange)="quantityToAdd.set($event)"
+      />
+    </label>
+    <div class="form-field">
+      <button type="button" (click)="addItem()" [disabled]="productToAdd() === null">
+        Adicionar
+      </button>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th class="num">Preço unit.</th>
+        <th style="width: 110px">Qtd.</th>
+        <th class="num">Total</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of items(); track item.productId) {
+        @let quoted = quotedItem(item.productId);
+        <tr>
+          <td>{{ quoted?.productName ?? productName(item.productId) }}</td>
+          <td class="num">{{ quoted ? (quoted.unitPrice | currency: 'BRL') : '…' }}</td>
+          <td>
+            <input
+              type="number"
+              min="1"
+              step="1"
+              style="width: 80px"
+              [ngModel]="item.quantity"
+              (ngModelChange)="changeQuantity(item.productId, $event)"
+            />
+          </td>
+          <td class="num">{{ quoted ? (quoted.total | currency: 'BRL') : '…' }}</td>
+          <td class="actions">
+            <button type="button" class="danger" (click)="removeItem(item.productId)">
+              Remover
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5" class="muted">Adicione pelo menos um produto ao pedido.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="total">
+    Total:
+    @if (quoting()) {
+      <span class="muted">calculando…</span>
+    } @else {
+      {{ quote()?.total ?? 0 | currency: 'BRL' }}
+    }
+  </div>
+</section>
+
+<div class="row">
+  <button type="button" class="primary" [disabled]="!canSubmit()" (click)="submit()">
+    Finalizar pedido
+  </button>
+  <a class="button" routerLink="/orders">Cancelar</a>
+</div>

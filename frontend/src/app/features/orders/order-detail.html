@@ -1,0 +1,61 @@
+<div class="page-header">
+  <h1>Pedido #{{ id() }}</h1>
+  <a class="button" routerLink="/orders">Voltar</a>
+</div>
+
+@if (error()) {
+  <div class="alert">{{ error() }}</div>
+}
+
+@if (order(); as order) {
+  <section class="card">
+    <p><strong>Cliente:</strong> {{ order.client.name }} — {{ order.client.phone }}</p>
+    <p><strong>Data:</strong> {{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+    <p>
+      <strong>Status:</strong>
+      <span class="badge" [class]="order.status">{{ statusLabels[order.status] }}</span>
+    </p>
+
+    @if (order.nextStatuses.length > 0) {
+      <div class="row">
+        @for (status of order.nextStatuses; track status) {
+          <button
+            type="button"
+            [class.primary]="status !== 'canceled'"
+            [class.danger]="status === 'canceled'"
+            [disabled]="updating()"
+            (click)="changeStatus(status)"
+          >
+            {{ status === 'canceled' ? 'Cancelar pedido' : 'Mover para: ' + statusLabels[status] }}
+          </button>
+        }
+      </div>
+    } @else {
+      <p class="muted">Este pedido está em um estado final e não pode mudar de status.</p>
+    }
+  </section>
+
+  <section class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th class="num">Preço unit.</th>
+          <th class="num">Qtd.</th>
+          <th class="num">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of order.items; track item.id) {
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td class="num">{{ item.unitPrice | currency: 'BRL' }}</td>
+            <td class="num">{{ item.quantity }}</td>
+            <td class="num">{{ item.total | currency: 'BRL' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="total">Total: {{ order.total | currency: 'BRL' }}</div>
+  </section>
+}
